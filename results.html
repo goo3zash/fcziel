@@ -1,0 +1,187 @@
+﻿<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>試合結果｜FC ZIEL（ツイール）東京都北区の社会人サッカーチーム</title>
+  <meta name="description" content="FC ZIEL（ツイール）の北区社会人サッカーリーグ成績。2023〜2025年度の2部リーグ成績を掲載。">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="index.html" class="nav-logo"><img src="images/IMG_0385.jpeg" alt="FC ZIEL"></a>
+    <div class="nav-links">
+      <a href="index.html">トップ</a>
+      <a href="about.html">チーム情報</a>
+      <a href="location.html">活動場所</a>
+      <a href="results.html" class="active">試合結果</a>
+      <a href="join.html">募集</a>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero hero-sm" style="background-image: url('photo_goal.jpg')">
+    <canvas id="starfield"></canvas>
+    <div class="hero-body">
+      <p class="hero-ja">League Results</p>
+      <h1 class="hero-en">試合結果</h1>
+      <p class="hero-tagline">北区社会人サッカーリーグ 成績一覧</p>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section>
+    <div class="container">
+      <span class="section-eyebrow">League Records</span>
+      <h2 class="section-title">北区社会人サッカーリーグ <span>成績</span></h2>
+
+      <!-- 2026年度 試合記録 -->
+      <div class="season-block">
+        <div class="season-header">
+          <div>
+            <p class="season-year">2026年度</p>
+            <p class="season-league">北区社会人サッカーリーグ 2部Aリーグ</p>
+          </div>
+          <div class="season-stats">
+            <div class="season-stat"><span class="s-num" id="wins2026">0</span><span class="s-lbl">勝</span></div>
+            <div class="season-stat"><span class="s-num" id="draws2026">0</span><span class="s-lbl">分</span></div>
+            <div class="season-stat"><span class="s-num" id="losses2026">1</span><span class="s-lbl">敗</span></div>
+          </div>
+        </div>
+        <table class="match-table">
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>相手</th>
+              <th>会場</th>
+              <th>スコア</th>
+              <th>結果</th>
+            </tr>
+          </thead>
+          <tbody>
+
+            <!-- ▼ 試合結果をここに追加（新しい順） ▼ -->
+
+            <tr class="result-upcoming">
+              <td>5/17（日）</td>
+              <td>トリコロール</td>
+              <td>赤羽スポーツの森</td>
+              <td>−</td>
+              <td><span class="match-badge badge-upcoming">予定</span></td>
+            </tr>
+            <tr class="result-loss">
+              <td>4/29（水祝）</td>
+              <td>志茂</td>
+              <td>北運動公園</td>
+              <td><span class="match-score loss">1 − 2</span></td>
+              <td><span class="match-badge badge-loss">● 負</span></td>
+            </tr>
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- 年度別成績サマリー -->
+      <div class="season-block">
+        <div class="season-header">
+          <div>
+            <p class="season-year" style="font-size:1.1rem;color:var(--muted)">過去の成績</p>
+          </div>
+        </div>
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>年度</th>
+              <th>リーグ</th>
+              <th>勝点</th>
+              <th>得点</th>
+              <th>失点</th>
+              <th>点差</th>
+              <th>順位</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025年度</td>
+              <td>2部Bリーグ</td>
+              <td>7</td><td>7</td><td>29</td><td>−22</td>
+              <td>2部15位</td>
+            </tr>
+            <tr>
+              <td>2024年度</td>
+              <td>2部Bリーグ</td>
+              <td>5</td><td>9</td><td>24</td><td>−15</td>
+              <td>2B内9位</td>
+            </tr>
+            <tr>
+              <td>2023年度</td>
+              <td>2部Bリーグ</td>
+              <td>10</td><td>15</td><td>17</td><td>−2</td>
+              <td>2部14位</td>
+            </tr>
+            <tr>
+              <td>2022年度</td>
+              <td>1部Bリーグ</td>
+              <td>3</td><td>9</td><td>35</td><td>−26</td>
+              <td>20位 <span class="match-badge badge-down">↓降格</span></td>
+            </tr>
+            <tr style="background:#FFFDE7;">
+              <td>2021年度</td>
+              <td>2部Aリーグ</td>
+              <td><strong>22</strong></td><td>31</td><td>19</td><td>+12</td>
+              <td><strong style="color:#1B5E20;">3位</strong> <span class="match-badge badge-up">↑昇格</span></td>
+            </tr>
+            <tr>
+              <td>2020年度</td>
+              <td>1部Aリーグ</td>
+              <td>4</td><td>8</td><td>34</td><td>−26</td>
+              <td>21位 <span class="match-badge badge-down">↓降格</span></td>
+            </tr>
+            <tr>
+              <td>2019年度</td>
+              <td>1部Bリーグ</td>
+              <td>8</td><td>19</td><td>23</td><td>−4</td>
+              <td>19位</td>
+            </tr>
+            <tr>
+              <td>2018年度</td>
+              <td>1部Bリーグ</td>
+              <td>12</td><td>11</td><td>19</td><td>−8</td>
+              <td>13位</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Photos -->
+  <div class="photo-strip" style="margin-top:0">
+    <img src="images/IMG_0831.jpeg"       alt="FC ZIEL チーム">
+    <img src="images/photo_celebrate.jpg" alt="ゴール後の喜び">
+    <img src="images/photo_duel.jpg"      alt="1対1の攻防">
+  </div>
+
+  <div class="cta-banner" style="padding:3rem 1.5rem">
+    <p style="margin-bottom:1rem">チームに加わってリーグ戦に一緒に出よう！</p>
+    <a href="join.html" class="btn btn-gold">メンバー募集ページへ</a>
+  </div>
+
+  <a href="join.html" class="float-cta">
+    <span class="float-cta-icon">⚽</span>
+    <div class="float-cta-inner">
+      <span>メンバー募集</span>
+      <small>ご質問はこちら →</small>
+    </div>
+  </a>
+  <script src="stars.js"></script>
+  <footer>
+    <span class="footer-logo">FC ZIEL</span>
+    <p>© FC ZIEL｜東京都北区の社会人サッカーチーム</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1C2B4A"/>
+      <stop offset="100%" stop-color="#0D1117"/>
+    </linearGradient>
+  </defs>
+  <!-- 盾形（クラブエンブレム） -->
+  <path d="M16 1 L30 5.5 L30 17 Q30 27.5 16 31 Q2 27.5 2 17 L2 5.5 Z"
+        fill="url(#bg)"/>
+  <!-- 金の枠線 -->
+  <path d="M16 2.8 L28.2 6.8 L28.2 17 Q28.2 26.2 16 29.4 Q3.8 26.2 3.8 17 L3.8 6.8 Z"
+        fill="none" stroke="#D4A01A" stroke-width="1.4"/>
+  <!-- Z -->
+  <text x="16" y="23"
+        font-family="'Arial Black', 'Impact', Arial, sans-serif"
+        font-size="17" font-weight="900"
+        fill="#D4A01A" text-anchor="middle"
+        letter-spacing="-0.5">Z</text>
+</svg>

@@ -3,8 +3,10 @@
 <head>
   <meta charset="utf-8">
   <link rel="canonical" href="https://fcziel.github.io/">
-  <meta http-equiv="refresh" content="0; url=https://fcziel.github.io/">
-  <script>window.location.replace("https://fcziel.github.io/")</script>
+  <script>
+    var path = window.location.pathname.replace('/fcziel', '');
+    window.location.replace("https://fcziel.github.io" + path);
+  </script>
 </head>
 <body>
   <a href="https://fcziel.github.io/">移動する</a>

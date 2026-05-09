@@ -1,12 +1,490 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <link rel="canonical" href="https://fcziel.github.io/admin.html">
-  <meta http-equiv="refresh" content="0; url=https://fcziel.github.io/admin.html">
-  <script>window.location.replace("https://fcziel.github.io/admin.html")</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FC ZIEL 管理ツール</title>
+  <style>
+    :root {
+      --gold: #D4A01A; --dark: #0D1117; --navy: #1C2B4A;
+      --gray: #F3F4F6; --muted: #6B7280;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Hiragino Kaku Gothic ProN","Meiryo",sans-serif; background: #0f1117; color: #e5e7eb; min-height: 100vh; }
+
+    header {
+      background: var(--dark); border-bottom: 2px solid var(--gold);
+      padding: 1rem 1.5rem; display: flex; align-items: center; gap: 1rem;
+    }
+    header h1 { color: var(--gold); font-size: 1.2rem; font-weight: 900; }
+    header p  { color: var(--muted); font-size: 0.82rem; }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 1.5rem; }
+
+    /* Token section */
+    .token-section {
+      background: var(--dark); border: 1px solid #30363d;
+      border-radius: 10px; padding: 1.2rem; margin-bottom: 1.5rem;
+    }
+    .token-section label { font-size: 0.82rem; color: var(--muted); display: block; margin-bottom: 0.4rem; }
+    .token-row { display: flex; gap: 0.6rem; }
+    .token-row input {
+      flex: 1; background: #161b22; border: 1px solid #30363d;
+      color: #e5e7eb; padding: 0.6rem 0.8rem; border-radius: 6px; font-size: 0.9rem;
+    }
+    .token-hint { font-size: 0.75rem; color: var(--muted); margin-top: 0.4rem; }
+    .status-ok   { color: #3fb950; font-size: 0.82rem; margin-top: 0.4rem; }
+    .status-err  { color: #f85149; font-size: 0.82rem; margin-top: 0.4rem; }
+
+    /* Tabs */
+    .tabs { display: flex; gap: 0; margin-bottom: 1.2rem; border-bottom: 2px solid #30363d; }
+    .tab {
+      padding: 0.7rem 1.4rem; cursor: pointer; font-size: 0.9rem; font-weight: 700;
+      color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -2px;
+      background: none; border-top: none; border-left: none; border-right: none;
+      font-family: inherit; transition: color 0.2s;
+    }
+    .tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    /* Panel */
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .card {
+      background: var(--dark); border: 1px solid #30363d;
+      border-radius: 10px; padding: 1.4rem; margin-bottom: 1rem;
+    }
+    .card h3 { color: var(--gold); font-size: 0.95rem; margin-bottom: 1rem; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { font-size: 0.8rem; color: var(--muted); display: block; margin-bottom: 0.35rem; }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%; background: #161b22; border: 1px solid #30363d;
+      color: #e5e7eb; padding: 0.65rem 0.8rem; border-radius: 6px;
+      font-size: 0.9rem; font-family: inherit;
+    }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus { outline: none; border-color: var(--gold); }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+    .score-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 0.5rem; }
+    .score-sep { color: var(--muted); text-align: center; font-size: 1.2rem; font-weight: 700; }
+
+    /* Preview */
+    .preview {
+      background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+      padding: 1rem; margin-bottom: 1rem; display: none;
+    }
+    .preview h4 { font-size: 0.78rem; color: var(--muted); margin-bottom: 0.6rem; }
+    .preview-content { font-size: 0.82rem; color: #9ca3af; white-space: pre-wrap; word-break: break-all; }
+
+    /* Buttons */
+    .btn {
+      padding: 0.7rem 1.4rem; border-radius: 6px; font-size: 0.9rem;
+      font-weight: 700; cursor: pointer; border: none; font-family: inherit;
+      transition: opacity 0.2s, transform 0.1s;
+    }
+    .btn:hover { opacity: 0.85; transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    .btn-gold    { background: var(--gold); color: var(--dark); }
+    .btn-outline { background: none; border: 1px solid #30363d; color: #e5e7eb; }
+    .btn-sm      { padding: 0.45rem 0.9rem; font-size: 0.82rem; }
+    .btn-row     { display: flex; gap: 0.6rem; margin-top: 1rem; }
+
+    /* Alert */
+    .alert {
+      padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.85rem;
+      margin-bottom: 1rem; display: none;
+    }
+    .alert-ok  { background: #0d2a0d; border: 1px solid #3fb950; color: #3fb950; }
+    .alert-err { background: #2d0f0f; border: 1px solid #f85149; color: #f85149; }
+
+    /* Spinner */
+    .spinner { display: none; width: 16px; height: 16px; border: 2px solid #30363d; border-top-color: var(--gold); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; margin-left: 0.4rem; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 480px) {
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
 <body>
-  <a href="https://fcziel.github.io/admin.html">移動する</a>
+
+<header>
+  <div>
+    <h1>⚙️ FC ZIEL 管理ツール</h1>
+    <p>このページはブラウザから直接GitHubを更新します</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Token -->
+  <div class="token-section">
+    <label>GitHub Personal Access Token（Fine-grained）</label>
+    <div class="token-row">
+      <input type="password" id="token" placeholder="github_pat_..." autocomplete="off">
+      <button class="btn btn-outline btn-sm" onclick="checkToken()">接続確認</button>
+    </div>
+    <p class="token-hint">⚠️ このページを閉じるとトークンはリセットされます</p>
+    <p id="tokenStatus"></p>
+  </div>
+
+  <!-- Alert -->
+  <div class="alert alert-ok" id="alertOk">✅ GitHubに保存しました。数分で反映されます。</div>
+  <div class="alert alert-err" id="alertErr"></div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('news')">📢 お知らせ</button>
+    <button class="tab" onclick="switchTab('match')">⚽ 試合結果</button>
+    <button class="tab" onclick="switchTab('analytics')">📊 分析</button>
+  </div>
+
+  <!-- お知らせパネル -->
+  <div class="panel active" id="panel-news">
+    <div class="card">
+      <h3>お知らせを追加</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>日付</label>
+          <input type="text" id="news-date" placeholder="例：5/17（日）10:45">
+        </div>
+        <div class="form-group">
+          <label>種別</label>
+          <select id="news-type" onchange="toggleNewsFields()">
+            <option value="upcoming">次の試合</option>
+            <option value="result-win">結果 ○勝</option>
+            <option value="result-loss">結果 ●負</option>
+            <option value="result-draw">結果 △分</option>
+            <option value="info">お知らせ</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" id="news-body-group">
+        <label>内容</label>
+        <input type="text" id="news-body" placeholder="例：2部A　トリコロール vs FC ZIEL　@ 赤羽スポーツの森">
+      </div>
+
+      <div class="form-group" id="news-score-group" style="display:none">
+        <label>スコア</label>
+        <div class="score-row">
+          <input type="text" id="news-score-home" placeholder="FC ZIEL得点">
+          <span class="score-sep">−</span>
+          <input type="text" id="news-score-away" placeholder="相手得点">
+        </div>
+      </div>
+
+      <div class="preview" id="preview-news">
+        <h4>プレビュー（index.htmlに追加される内容）</h4>
+        <div class="preview-content" id="preview-news-content"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="previewNews()">プレビュー</button>
+        <button class="btn btn-gold" id="btn-save-news" onclick="saveNews()" disabled>
+          保存してGitHubへ反映
+          <span class="spinner" id="spinner-news"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 試合結果パネル -->
+  <div class="panel" id="panel-match">
+    <div class="card">
+      <h3>試合結果を追加</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>日付</label>
+          <input type="text" id="match-date" placeholder="例：5/17（日）">
+        </div>
+        <div class="form-group">
+          <label>結果</label>
+          <select id="match-result">
+            <option value="upcoming">予定</option>
+            <option value="win">○ 勝</option>
+            <option value="loss">● 負</option>
+            <option value="draw">△ 分</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>相手チーム</label>
+          <input type="text" id="match-opponent" placeholder="例：トリコロール">
+        </div>
+        <div class="form-group">
+          <label>会場</label>
+          <select id="match-venue">
+            <option value="赤羽スポーツの森">赤羽スポーツの森</option>
+            <option value="北運動公園">北運動公園</option>
+            <option value="その他">その他</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" id="match-score-group">
+        <label>スコア（FC ZIEL − 相手）</label>
+        <div class="score-row">
+          <input type="text" id="match-score-home" placeholder="FC ZIEL">
+          <span class="score-sep">−</span>
+          <input type="text" id="match-score-away" placeholder="相手">
+        </div>
+      </div>
+
+      <div class="preview" id="preview-match">
+        <h4>プレビュー（results.htmlに追加される内容）</h4>
+        <div class="preview-content" id="preview-match-content"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-outline" onclick="previewMatch()">プレビュー</button>
+        <button class="btn btn-gold" id="btn-save-match" onclick="saveMatch()" disabled>
+          保存してGitHubへ反映
+          <span class="spinner" id="spinner-match"></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 分析パネル -->
+  <div class="panel" id="panel-analytics">
+    <div class="card">
+      <h3>サイト分析ダッシュボード</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;margin-bottom:1.2rem">
+        <a href="https://analytics.google.com/analytics/web/#/p$(GA_ID)/reports/reportinghub" target="_blank" style="text-decoration:none">
+          <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;text-align:center;transition:border-color 0.2s" onmouseover="this.style.borderColor='#D4A01A'" onmouseout="this.style.borderColor='#30363d'">
+            <div style="font-size:1.8rem;margin-bottom:0.3rem">📈</div>
+            <div style="color:#D4A01A;font-weight:700;font-size:0.9rem">Google Analytics</div>
+            <div style="color:#6B7280;font-size:0.75rem;margin-top:0.2rem">訪問者・ページビュー</div>
+          </div>
+        </a>
+        <a href="https://search.google.com/search-console/performance/search-analytics?resource_id=https%3A%2F%2Ffcziel.github.io%2F" target="_blank" style="text-decoration:none">
+          <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem;text-align:center;transition:border-color 0.2s" onmouseover="this.style.borderColor='#D4A01A'" onmouseout="this.style.borderColor='#30363d'">
+            <div style="font-size:1.8rem;margin-bottom:0.3rem">🔍</div>
+            <div style="color:#D4A01A;font-weight:700;font-size:0.9rem">Search Console</div>
+            <div style="color:#6B7280;font-size:0.75rem;margin-top:0.2rem">検索表示・クリック数</div>
+          </div>
+        </a>
+      </div>
+      <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:1rem">
+        <p style="color:#6B7280;font-size:0.8rem;margin-bottom:0.8rem">📌 サイトのクイックリンク</p>
+        <div style="display:flex;flex-direction:column;gap:0.4rem">
+          <a href="https://fcziel.github.io/" target="_blank" style="color:#D4A01A;font-size:0.85rem">↗ サイトを開く</a>
+          <a href="https://github.com/fcziel/fcziel.github.io" target="_blank" style="color:#D4A01A;font-size:0.85rem">↗ GitHubリポジトリ</a>
+          <a href="https://fcziel.github.io/faq.html" target="_blank" style="color:#D4A01A;font-size:0.85rem">↗ FAQページ</a>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>チェックリスト</h3>
+      <div style="display:flex;flex-direction:column;gap:0.5rem;font-size:0.88rem">
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;color:#e5e7eb">
+          <input type="checkbox" style="accent-color:#D4A01A"> 試合後に results.html の結果を更新した
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;color:#e5e7eb">
+          <input type="checkbox" style="accent-color:#D4A01A"> index.html のお知らせを更新した
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;color:#e5e7eb">
+          <input type="checkbox" style="accent-color:#D4A01A"> Search Console のサイトマップを再試行した
+        </label>
+        <label style="display:flex;align-items:center;gap:0.6rem;cursor:pointer;color:#e5e7eb">
+          <input type="checkbox" style="accent-color:#D4A01A"> Google Analytics でデータを確認した
+        </label>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+const OWNER = 'fcziel';
+const REPO  = 'fcziel.github.io';
+
+// ── Token ──
+function getToken() { return document.getElementById('token').value.trim(); }
+
+async function checkToken() {
+  const token = getToken();
+  const el = document.getElementById('tokenStatus');
+  if (!token) { el.className = 'status-err'; el.textContent = 'トークンを入力してください'; return; }
+  try {
+    const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (r.ok) {
+      el.className = 'status-ok';
+      el.textContent = '✅ 接続OK';
+      document.getElementById('btn-save-news').disabled  = false;
+      document.getElementById('btn-save-match').disabled = false;
+    } else {
+      el.className = 'status-err'; el.textContent = '❌ 接続失敗。トークンを確認してください';
+    }
+  } catch { el.className = 'status-err'; el.textContent = '❌ 接続エラー'; }
+}
+
+// ── Tabs ──
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['news','match','analytics'][i]===tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+
+// ── News helpers ──
+function toggleNewsFields() {
+  const type = document.getElementById('news-type').value;
+  const isResult = type.startsWith('result');
+  document.getElementById('news-score-group').style.display = isResult ? 'block' : 'none';
+}
+
+function buildNewsHtml() {
+  const date     = document.getElementById('news-date').value.trim();
+  const type     = document.getElementById('news-type').value;
+  const body     = document.getElementById('news-body').value.trim();
+  const scoreH   = document.getElementById('news-score-home').value.trim();
+  const scoreA   = document.getElementById('news-score-away').value.trim();
+
+  const typeMap = {
+    upcoming:    ['news-upcoming','tag-upcoming','次の試合'],
+    'result-win':  ['news-result','tag-result','結果'],
+    'result-loss': ['news-result','tag-result','結果'],
+    'result-draw': ['news-result','tag-result','結果'],
+    info:        ['news-info','tag-info','お知らせ'],
+  };
+  const [cls, tagCls, label] = typeMap[type];
+
+  const scoreClass = type==='result-win'?'win': type==='result-loss'?'loss':'draw';
+  const scoreHtml = type.startsWith('result') && scoreH && scoreA
+    ? `\n            <span class="news-score ${scoreClass}">${scoreH} - ${scoreA}</span>` : '';
+
+  return `        <div class="news-item ${cls}">
+          <span class="news-tag ${tagCls}">${label}</span>
+          <span class="news-date">${date}</span>
+          <span class="news-body">${body}${scoreHtml}
+          </span>
+        </div>`;
+}
+
+function buildMatchHtml() {
+  const date     = document.getElementById('match-date').value.trim();
+  const result   = document.getElementById('match-result').value;
+  const opponent = document.getElementById('match-opponent').value.trim();
+  const venue    = document.getElementById('match-venue').value;
+  const scoreH   = document.getElementById('match-score-home').value.trim();
+  const scoreA   = document.getElementById('match-score-away').value.trim();
+
+  const resultMap = {
+    upcoming: ['result-upcoming','−','badge-upcoming','予定',''],
+    win:      ['result-win',`${scoreH} − ${scoreA}`,'badge-win','○ 勝','win'],
+    loss:     ['result-loss',`${scoreH} − ${scoreA}`,'badge-loss','● 負','loss'],
+    draw:     ['result-draw',`${scoreH} − ${scoreA}`,'badge-draw','△ 分','draw'],
+  };
+  const [rowCls, score, badgeCls, badgeLabel, scoreClass] = resultMap[result];
+  const scoreCell = result==='upcoming'
+    ? '−'
+    : `<span class="match-score ${scoreClass}">${score}</span>`;
+
+  return `            <tr class="${rowCls}">
+              <td>${date}</td>
+              <td>${opponent}</td>
+              <td>${venue}</td>
+              <td>${scoreCell}</td>
+              <td><span class="match-badge ${badgeCls}">${badgeLabel}</span></td>
+            </tr>`;
+}
+
+// ── Preview ──
+function previewNews() {
+  const html = buildNewsHtml();
+  document.getElementById('preview-news-content').textContent = html;
+  document.getElementById('preview-news').style.display = 'block';
+}
+
+function previewMatch() {
+  const html = buildMatchHtml();
+  document.getElementById('preview-match-content').textContent = html;
+  document.getElementById('preview-match').style.display = 'block';
+}
+
+// ── GitHub API ──
+async function getFile(token, path) {
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    headers: { 'Authorization': `Bearer ${token}` }
+  });
+  if (!r.ok) throw new Error(`${path} の取得に失敗`);
+  const d = await r.json();
+  return {
+    content: decodeURIComponent(escape(atob(d.content.replace(/\n/g, '')))),
+    sha: d.sha
+  };
+}
+
+async function putFile(token, path, content, sha, message) {
+  const r = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message,
+      content: btoa(unescape(encodeURIComponent(content))),
+      sha
+    })
+  });
+  if (!r.ok) throw new Error(`${path} の保存に失敗`);
+}
+
+function showAlert(ok, msg) {
+  document.getElementById('alertOk').style.display  = ok  ? 'block' : 'none';
+  const errEl = document.getElementById('alertErr');
+  errEl.style.display = !ok ? 'block' : 'none';
+  if (!ok) errEl.textContent = '❌ ' + msg;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function setLoading(id, on) {
+  document.getElementById('btn-save-'+id).disabled = on;
+  document.getElementById('spinner-'+id).style.display = on ? 'inline-block' : 'none';
+}
+
+// ── Save News ──
+async function saveNews() {
+  const token = getToken();
+  if (!token) { showAlert(false, 'トークンを入力してください'); return; }
+  setLoading('news', true);
+  try {
+    const newHtml = buildNewsHtml();
+    const marker  = '<!-- NEWS_INSERT -->';
+    const { content, sha } = await getFile(token, 'index.html');
+    if (!content.includes(marker)) throw new Error('挿入ポイントが見つかりません');
+    const updated = content.replace(marker, marker + '\n' + newHtml);
+    await putFile(token, 'index.html', updated, sha, 'お知らせ追加');
+    showAlert(true);
+  } catch(e) { showAlert(false, e.message); }
+  finally { setLoading('news', false); }
+}
+
+// ── Save Match ──
+async function saveMatch() {
+  const token = getToken();
+  if (!token) { showAlert(false, 'トークンを入力してください'); return; }
+  setLoading('match', true);
+  try {
+    const newHtml = buildMatchHtml();
+    const marker  = '<!-- ▼ 試合結果をここに追加（新しい順） ▼ -->';
+    const { content, sha } = await getFile(token, 'results.html');
+    if (!content.includes(marker)) throw new Error('挿入ポイントが見つかりません');
+    const updated = content.replace(marker, marker + '\n' + newHtml);
+    await putFile(token, 'results.html', updated, sha, '試合結果追加');
+    showAlert(true);
+  } catch(e) { showAlert(false, e.message); }
+  finally { setLoading('match', false); }
+}
+</script>
 </body>
 </html>

@@ -1,0 +1,104 @@
+name: サイト健全性チェック
+
+on:
+  schedule:
+    - cron: '0 0 * * 1'  # 毎週月曜 09:00 JST
+  workflow_dispatch:       # 手動実行も可能
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: results.html チェック
+        id: check_results
+        run: |
+          if grep -q "移動する" results.html; then
+            echo "broken=true" >> $GITHUB_OUTPUT
+            echo "file=results.html" >> $GITHUB_OUTPUT
+            echo "::error::results.html が壊れています（リダイレクトスタブを検出）"
+          elif ! grep -q "北区社会人サッカーリーグ" results.html; then
+            echo "broken=true" >> $GITHUB_OUTPUT
+            echo "file=results.html" >> $GITHUB_OUTPUT
+            echo "::error::results.html に正常コンテンツが見つかりません"
+          else
+            echo "broken=false" >> $GITHUB_OUTPUT
+            echo "results.html: OK"
+          fi
+
+      - name: index.html チェック
+        id: check_index
+        run: |
+          if grep -q "移動する" index.html; then
+            echo "broken=true" >> $GITHUB_OUTPUT
+            echo "::error::index.html が壊れています（リダイレクトスタブを検出）"
+          elif ! grep -q "FC ZIEL" index.html; then
+            echo "broken=true" >> $GITHUB_OUTPUT
+            echo "::error::index.html に正常コンテンツが見つかりません"
+          else
+            echo "broken=false" >> $GITHUB_OUTPUT
+            echo "index.html: OK"
+          fi
+
+      - name: faq.html チェック
+        id: check_faq
+        run: |
+          if grep -q "移動する" faq.html; then
+            echo "broken=true" >> $GITHUB_OUTPUT
+            echo "::error::faq.html が壊れています"
+          else
+            echo "broken=false" >> $GITHUB_OUTPUT
+            echo "faq.html: OK"
+          fi
+
+      - name: 破損時 → 直前の正常コミットに自動修復
+        if: steps.check_results.outputs.broken == 'true' || steps.check_index.outputs.broken == 'true' || steps.check_faq.outputs.broken == 'true'
+        run: |
+          echo "破損を検出。直前の正常コミットを探します..."
+
+          # 各ファイルの最後の正常コミットを探す（リダイレクトスタブでないもの）
+          for FILE in results.html index.html faq.html; do
+            COMMITS=$(git log --format="%H" -- $FILE | head -20)
+            for COMMIT in $COMMITS; do
+              CONTENT=$(git show $COMMIT:$FILE 2>/dev/null)
+              if echo "$CONTENT" | grep -q "FC ZIEL" && ! echo "$CONTENT" | grep -q "移動する"; then
+                echo "$COMMIT" > /tmp/good_${FILE}.sha
+                echo "$FILE: 正常コミット = $COMMIT"
+                break
+              fi
+            done
+          done
+
+          # 正常バージョンに戻す
+          RESTORED=false
+          for FILE in results.html index.html faq.html; do
+            if [ -f /tmp/good_${FILE}.sha ]; then
+              COMMIT=$(cat /tmp/good_${FILE}.sha)
+              git show $COMMIT:$FILE > $FILE
+              RESTORED=true
+              echo "$FILE を $COMMIT から復元"
+            fi
+          done
+
+          if [ "$RESTORED" = "true" ]; then
+            git config user.name "GitHub Actions"
+            git config user.email "actions@github.com"
+            git add results.html index.html faq.html
+            git commit -m "[自動修復] 破損ファイルを正常バージョンに復元"
+            git push
+            echo "自動修復完了"
+          fi
+
+      - name: 破損時 → Issue を作成して通知
+        if: steps.check_results.outputs.broken == 'true' || steps.check_index.outputs.broken == 'true' || steps.check_faq.outputs.broken == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '⚠️ サイト破損を検出・自動修復しました',
+              body: `## サイト健全性チェック\n\n破損が検出されたため、直前の正常バージョンに自動修復しました。\n\n確認してください: https://fcziel.github.io\n\n実行日時: ${new Date().toLocaleString('ja-JP', {timeZone: 'Asia/Tokyo'})}`,
+              labels: ['bug']
+            });

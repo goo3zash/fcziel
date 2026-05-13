@@ -4,12 +4,12 @@
 
 ## 公開URL
 
-https://goo3zash.github.io/fcziel/
+https://fcziel.github.io/
 
 ## 技術構成
 
 - 静的HTML / CSS / Vanilla JS（フレームワークなし）
-- ホスティング：GitHub Pages（リポジトリ：goo3zash/fcziel）
+- ホスティング：GitHub Pages（リポジトリ：fcziel/fcziel.github.io）
 - フォーム：Googleフォーム（埋め込み）
 - 分析：Google Analytics（G-9GGPW8HF98）
 - 検索：Google Search Console 登録済み
@@ -25,8 +25,11 @@ https://goo3zash.github.io/fcziel/
 | join.html | メンバー募集・問い合わせフォーム |
 | faq.html | よくある質問（8項目） |
 | admin.html | 管理ツール（お知らせ・試合結果・分析） |
+| update.html | 第三者用更新フォームへのリダイレクト |
 | sitemap.xml | SEO用サイトマップ |
 | robots.txt | クローラー設定 |
+| gas_updater.js | Google Apps Script（参照用） |
+| .github/workflows/health-check.yml | 週次サイト健全性チェック・自動修復 |
 
 ## ファイル構成
 
@@ -34,6 +37,7 @@ https://goo3zash.github.io/fcziel/
 fcziel/
 ├── images/              画像ファイル（チーム写真・フリー素材）
 ├── 北区リーグ結果/      北区社会人リーグPDF（日程・結果）
+├── .github/workflows/   GitHub Actions
 ├── *.html               サイトページ
 ├── style.css            共通スタイル（金×紺のカラーテーマ）
 ├── stars.js             ヒーロー背景の星アニメーション
@@ -44,7 +48,7 @@ fcziel/
 
 - 正式名称：FootballClub ZIEL（フットボールクラブ ツィール）
 - 設立：1989年
-- 所属：東京都北区社会人サッカーリーグ 2部
+- 所属：東京都北区社会人サッカーリーグ 2部A
 - 活動場所：赤羽スポーツの森公園 / 北運動公園
 - 活動日：主に日曜日（月1回程度、リーグスケジュールによる）
 - ユニフォーム：1st=金、2nd=白
@@ -61,19 +65,38 @@ fcziel/
 
 ## コンテンツ更新方法
 
-### お知らせ・試合結果の更新（管理ツール使用）
-1. `admin.html` をブラウザで開く
-2. GitHub Personal Access Token を入力
-3. フォームに入力 → プレビュー確認 → 保存
+### 試合結果・次の試合の更新（第三者も可）
+- **更新フォームURL**：https://fcziel.github.io/update
+- Google フォームで入力 → 自動でサイトに反映（数分）
+- 更新対象：results.html の試合テーブル、index.html のお知らせ・ポップアップ
+
+### Google Apps Script
+- スクリプトURL：https://script.google.com（FC ZIELアカウントでログイン）
+- フォーム送信 → onFormSubmit → GitHub API 経由でファイル更新
+- トークン：スクリプトプロパティ `GITHUB_TOKEN`（Classic token、repo権限）
 
 ### 手動更新時の挿入ポイント
 - お知らせ（index.html）：`<!-- NEWS_INSERT -->` の直後に追記
 - 試合結果（results.html）：`<!-- ▼ 試合結果をここに追加（新しい順） ▼ -->` の直後に追記
+- 次の試合（index.html）：`<!-- NEXT_MATCH_START -->〜<!-- NEXT_MATCH_END -->` を置換
+- 次の試合（results.html）：`<!-- NEXT_RESULT_ROW_START -->〜<!-- NEXT_RESULT_ROW_END -->` を置換
+- ポップアップ次の試合：`<!-- POPUP_UPCOMING_START -->〜<!-- POPUP_UPCOMING_END -->` を置換
+- ポップアップ結果：`<!-- POPUP_RESULT_START -->〜<!-- POPUP_RESULT_END -->` を置換
+
+### ローカル↔GitHub 同期
+- GAS がフォーム経由で GitHub を直接更新するため、ローカルは自動では更新されない
+- ローカルを編集する前に必ず GitHub Desktop で **Pull** すること
 
 ### GitHubへの反映手順
-1. ファイルを編集
-2. github.com/goo3zash/fcziel でファイルを更新
+1. ローカルファイルを編集
+2. GitHub Desktop で Commit → Push
 3. 数分でサイトに反映
+
+## 週次サイト健全性チェック（自動）
+
+- 毎週月曜 9:00 JST に GitHub Actions が自動実行
+- results.html・index.html・faq.html の破損を検知
+- 破損時：直前の正常コミットに自動修復 + GitHub Issue で通知
 
 ## 試合結果HTMLテンプレート
 
@@ -106,7 +129,7 @@ fcziel/
 |------|------|------|------|
 | 4/29（水祝）| 志茂 | 北運動公園 | 1-2 負 |
 | 5/17（日）| トリコロール | 赤羽スポーツの森 | 予定 |
-| 5/31（日）| なし | - | - |
+| 5/31（日）| - | - | - |
 
 ## SEO状況
 
@@ -117,6 +140,6 @@ fcziel/
 
 ## GitHub管理ツール用トークン
 
-GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
-- 対象リポジトリ：fcziel
-- 必要権限：Contents（Read and Write）
+GitHub → Settings → Developer settings → Personal access tokens → Classic tokens
+- 対象リポジトリ：fcziel/fcziel.github.io
+- 必要権限：repo（全権限）

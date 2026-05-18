@@ -1,9 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="canonical" href="https://fcziel.github.io/results.html">
   <title>試合結果｜FC ZIEL（ツイール）東京都北区の社会人サッカーチーム</title>
   <meta name="description" content="FC ZIEL（ツイール）の北区社会人サッカーリーグ成績。2023〜2025年度の2部リーグ成績を掲載。">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -15,8 +14,7 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-9GGPW8HF98');
-  </script>
-</head>
+  </script></head>
 <body>
 
   <nav class="nav">
@@ -56,7 +54,7 @@
           <div class="season-stats">
             <div class="season-stat"><span class="s-num" id="wins2026">0</span><span class="s-lbl">勝</span></div>
             <div class="season-stat"><span class="s-num" id="draws2026">0</span><span class="s-lbl">分</span></div>
-            <div class="season-stat"><span class="s-num" id="losses2026">1</span><span class="s-lbl">敗</span></div>
+            <div class="season-stat"><span class="s-num" id="losses2026">0</span><span class="s-lbl">敗</span></div>
           </div>
         </div>
         <table class="match-table">
@@ -73,14 +71,13 @@
 
             <!-- ▼ 試合結果をここに追加（新しい順） ▼ -->
             <tr class="result-loss">
-              <td>5/17(日)</td>
+              <td>5/17（日）</td>
               <td>トリコロール</td>
               <td>赤羽スポーツの森</td>
               <td><span class="match-score loss">0 − 3</span></td>
               <td><span class="match-badge badge-loss">● 負</span></td>
             </tr>
 
-            <!-- NEXT_RESULT_ROW_START -->
             <tr class="result-upcoming">
               <td>5/17（日）</td>
               <td>トリコロール</td>
@@ -88,7 +85,6 @@
               <td>−</td>
               <td><span class="match-badge badge-upcoming">予定</span></td>
             </tr>
-            <!-- NEXT_RESULT_ROW_END -->
             <tr class="result-loss">
               <td>4/29（水祝）</td>
               <td>志茂</td>
@@ -196,6 +192,27 @@
     </div>
   </a>
   <script src="stars.js"></script>
+  <script>
+    (function() {
+      const now = new Date();
+      const yr  = now.getFullYear();
+
+      // 2026シーズン 勝敗カウント（テーブルから自動集計）
+      document.getElementById('wins2026').textContent   = document.querySelectorAll('tr.result-win').length;
+      document.getElementById('draws2026').textContent  = document.querySelectorAll('tr.result-draw').length;
+      document.getElementById('losses2026').textContent = document.querySelectorAll('tr.result-loss').length;
+
+      // 過去日になった「予定」行を非表示
+      document.querySelectorAll('tr.result-upcoming').forEach(row => {
+        const cell = row.querySelector('td');
+        if (!cell) return;
+        const m = cell.textContent.match(/(\d{1,2})\/(\d{1,2})/);
+        if (!m) return;
+        const d = new Date(yr, +m[1]-1, +m[2], 23, 59);
+        if (d < now) row.style.display = 'none';
+      });
+    })();
+  </script>
   <footer>
     <span class="footer-logo">FC ZIEL</span>
     <p style="margin-bottom:0.5rem"><a href="faq.html" style="color:#6B7280;text-decoration:none;font-size:0.82rem">よくある質問（FAQ）</a></p>

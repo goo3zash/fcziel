@@ -24,7 +24,7 @@ https://fcziel.github.io/
 | results.html | 試合結果（2018〜現在） |
 | join.html | メンバー募集・問い合わせフォーム |
 | faq.html | よくある質問（8項目） |
-| admin.html | 管理ツール（お知らせ・試合結果・分析） |
+| admin.html | 管理ツール（お知らせ・試合結果・カレンダー・分析） |
 | update.html | 第三者用更新フォームへのリダイレクト |
 | sitemap.xml | SEO用サイトマップ |
 | robots.txt | クローラー設定 |
@@ -34,7 +34,7 @@ https://fcziel.github.io/
 ## ファイル構成
 
 ```
-fcziel/
+fcziel.github.io/
 ├── images/              画像ファイル（チーム写真・フリー素材）
 ├── 北区リーグ結果/      北区社会人リーグPDF（日程・結果）
 ├── .github/workflows/   GitHub Actions
@@ -65,17 +65,28 @@ fcziel/
 
 ## コンテンツ更新方法
 
-### 試合結果・次の試合の更新（第三者も可）
-- **更新フォームURL**：https://fcziel.github.io/update
-- Google フォームで入力 → 自動でサイトに反映（数分）
-- 更新対象：results.html の試合テーブル、index.html のお知らせ・ポップアップ
+### お知らせ・試合結果の更新（管理ツール使用）
+1. `admin.html` をブラウザで開く（ローカルファイルをダブルクリック）
+2. GitHub Fine-grained Personal Access Token を入力し「接続確認」
+3. タブを選んでフォームに入力 → プレビュー確認 → 「保存してGitHubへ反映」
+4. 数分でサイトに反映
 
-### Google Apps Script
-- スクリプトURL：https://script.google.com（FC ZIELアカウントでログイン）
-- フォーム送信 → onFormSubmit → GitHub API 経由でファイル更新
-- トークン：スクリプトプロパティ `GITHUB_TOKEN`（Classic token、repo権限）
+### admin.html のタブ構成
+- **📢 お知らせ**：index.html の `<!-- NEWS_INSERT -->` に追記
+- **⚽ 試合結果**：results.html の `<!-- ▼ 試合結果をここに追加（新しい順） ▼ -->` に追記
+- **📅 カレンダー**：results.html から試合データを取得して月別カレンダー表示
+- **📊 分析**：Google Analytics / Search Console へのリンク
 
-### 手動更新時の挿入ポイント
+### トークン設定
+- GitHub → Settings → Developer settings → Personal access tokens → Fine-grained tokens
+- 対象リポジトリ：`fcziel/fcziel.github.io`
+- 必要権限：**Contents: Read and write**
+
+### 自動化機能（JS）
+- **index.html**：ページ読み込み時に `news-upcoming` 項目の日付を判定し、過去日は自動非表示（メインリスト・ポップアップ両方）
+- **results.html**：ページ読み込み時に `result-win/loss/draw` 行を自動集計して勝敗カウントを表示。`result-upcoming` 行は過去日になったら自動非表示
+
+### 手動更新時の挿入マーカー
 - お知らせ（index.html）：`<!-- NEWS_INSERT -->` の直後に追記
 - 試合結果（results.html）：`<!-- ▼ 試合結果をここに追加（新しい順） ▼ -->` の直後に追記
 - 次の試合（index.html）：`<!-- NEXT_MATCH_START -->〜<!-- NEXT_MATCH_END -->` を置換
@@ -83,27 +94,22 @@ fcziel/
 - ポップアップ次の試合：`<!-- POPUP_UPCOMING_START -->〜<!-- POPUP_UPCOMING_END -->` を置換
 - ポップアップ結果：`<!-- POPUP_RESULT_START -->〜<!-- POPUP_RESULT_END -->` を置換
 
-### ローカル↔GitHub 同期
-- GAS がフォーム経由で GitHub を直接更新するため、ローカルは自動では更新されない
+### ローカル↔GitHub 同期の注意
+- admin.html は GitHub API 経由で直接 GitHub を更新する
 - ローカルを編集する前に必ず GitHub Desktop で **Pull** すること
 
 ### GitHubへの反映手順
-1. ローカルファイルを編集
-2. GitHub Desktop で Commit → Push
-3. 数分でサイトに反映
-
-## 週次サイト健全性チェック（自動）
-
-- 毎週月曜 9:00 JST に GitHub Actions が自動実行
-- results.html・index.html・faq.html の破損を検知
-- 破損時：直前の正常コミットに自動修復 + GitHub Issue で通知
+1. GitHub Desktop で Pull（先に同期）
+2. ファイルを編集
+3. Commit → Push
+4. 数分でサイトに反映
 
 ## 試合結果HTMLテンプレート
 
 ```html
 <!-- 勝ち -->
 <tr class="result-win">
-  <td>5/17（日）</td><td>相手チーム</td><td>赤羽スポーツの森</td>
+  <td>5/31（日）</td><td>相手チーム</td><td>赤羽スポーツの森</td>
   <td><span class="match-score win">3 − 1</span></td>
   <td><span class="match-badge badge-win">○ 勝</span></td>
 </tr>
@@ -123,13 +129,13 @@ fcziel/
 </tr>
 ```
 
-## 2026年度試合日程（PDFより）
+## 2026年度試合日程
 
 | 日付 | 相手 | 会場 | 結果 |
 |------|------|------|------|
 | 4/29（水祝）| 志茂 | 北運動公園 | 1-2 負 |
-| 5/17（日）| トリコロール | 赤羽スポーツの森 | 予定 |
-| 5/31（日）| - | - | - |
+| 5/17（日）| トリコロール | 赤羽スポーツの森 | 0-3 負 |
+| 5/31（日）| 未定 | 未定 | 予定 |
 
 ## SEO状況
 
@@ -138,8 +144,8 @@ fcziel/
 - sitemap.xml：6ページ登録
 - 対象キーワード：社会人サッカー 北区 / 北区 サッカー 未経験 / FC ZIEL
 
-## GitHub管理ツール用トークン
+## 週次サイト健全性チェック（自動）
 
-GitHub → Settings → Developer settings → Personal access tokens → Classic tokens
-- 対象リポジトリ：fcziel/fcziel.github.io
-- 必要権限：repo（全権限）
+- 毎週月曜 9:00 JST に GitHub Actions が自動実行
+- results.html・index.html・faq.html の破損を検知
+- 破損時：直前の正常コミットに自動修復 + GitHub Issue で通知

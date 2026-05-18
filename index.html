@@ -1,9 +1,8 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="canonical" href="https://fcziel.github.io/">
   <title>FC ZIEL（ツイール）｜東京都北区の社会人サッカーチーム</title>
   <meta name="description" content="東京都北区の社会人サッカーチームFC ZIEL（ツイール）。未経験者・初心者歓迎。北区社会人サッカーリーグ参加。赤羽・北区エリアで月1回程度（日曜）活動。メンバー随時募集中！">
   <meta name="keywords" content="社会人サッカー,北区,東京,FC ZIEL,ツイール,赤羽,サッカーチーム,メンバー募集,北区社会人リーグ,未経験者歓迎,初心者,サッカー北区">
@@ -87,13 +86,11 @@
       <div class="news-list">
         <!-- NEWS_INSERT -->
 
-                        <!-- NEXT_MATCH_START -->
-          <div class="news-item news-upcoming">
-            <span class="news-tag tag-upcoming">次の試合</span>
-            <span class="news-date">5/17（日） 10:45</span>
-            <span class="news-body">2部A　<strong>トリコロール vs FC ZIEL</strong>　@ 赤羽スポーツの森</span>
-          </div>
-          <!-- NEXT_MATCH_END -->
+        <div class="news-item news-upcoming">
+          <span class="news-tag tag-upcoming">次の試合</span>
+          <span class="news-date">5/17（日）10:45</span>
+          <span class="news-body">2部A　<strong>トリコロール vs FC ZIEL</strong>　@ 赤羽スポーツの森</span>
+        </div>
 
         <div class="news-item news-result">
           <span class="news-tag tag-result">結果</span>
@@ -175,18 +172,14 @@
       <div class="popup-section">
         <span class="popup-section-label">📢 お知らせ</span>
         <div class="popup-news">
-                              <!-- POPUP_UPCOMING_START -->
-            <div class="popup-news-item">
-              <span class="popup-news-tag tag-upcoming">次の試合</span>
-              <span>5/17（日） 10:45　トリコロール vs FC ZIEL　@ 赤スポ</span>
-            </div>
-            <!-- POPUP_UPCOMING_END -->
-          <!-- POPUP_RESULT_START -->
+          <div class="popup-news-item">
+            <span class="popup-news-tag tag-upcoming">次の試合</span>
+            <span>5/17（日）10:45　トリコロール vs FC ZIEL　@ 赤スポ</span>
+          </div>
           <div class="popup-news-item">
             <span class="popup-news-tag tag-result">結果</span>
             <span>4/29（水祝）FC ZIEL vs 志茂　<span class="loss">1 - 2 ●</span></span>
           </div>
-          <!-- POPUP_RESULT_END -->
         </div>
       </div>
 
@@ -218,7 +211,32 @@
       document.getElementById('recruitPopup').classList.remove('active');
       sessionStorage.setItem('popupDone', '1');
     }
+
+    function hideExpiredUpcoming() {
+      const now = new Date();
+      const yr = now.getFullYear();
+      function parseDate(text) {
+        const m = text.match(/(\d{1,2})\/(\d{1,2})[^\d]*(?:(\d{1,2}):(\d{2}))?/);
+        if (!m) return null;
+        return new Date(yr, +m[1]-1, +m[2], m[3]?+m[3]:23, m[4]?+m[4]:59);
+      }
+      document.querySelectorAll('.news-upcoming').forEach(el => {
+        const dateEl = el.querySelector('.news-date');
+        if (!dateEl) return;
+        const d = parseDate(dateEl.textContent);
+        if (d && d < now) el.style.display = 'none';
+      });
+      document.querySelectorAll('.popup-news-item').forEach(el => {
+        if (!el.querySelector('.tag-upcoming')) return;
+        const spans = el.querySelectorAll('span');
+        if (spans.length < 2) return;
+        const d = parseDate(spans[1].textContent);
+        if (d && d < now) el.style.display = 'none';
+      });
+    }
+
     window.addEventListener('DOMContentLoaded', function() {
+      hideExpiredUpcoming();
       if (!sessionStorage.getItem('popupDone')) {
         setTimeout(function() {
           document.getElementById('recruitPopup').classList.add('active');

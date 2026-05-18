@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
@@ -11,6 +11,17 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="stylesheet" href="style.css">
+  <style>
+    .lang-switcher { display:flex; gap:0.2rem; align-items:center; margin-left:1rem; flex-shrink:0; }
+    .lang-btn {
+      background:transparent; border:1px solid rgba(255,255,255,0.25);
+      color:rgba(255,255,255,0.65); font-size:0.65rem; font-weight:700;
+      padding:0.18rem 0.42rem; border-radius:0.25rem; cursor:pointer;
+      letter-spacing:0.03em; transition:all 0.15s; line-height:1.4;
+    }
+    .lang-btn:hover { border-color:#D4A01A; color:#D4A01A; }
+    .lang-btn.active { background:#D4A01A; border-color:#D4A01A; color:#0D1117; }
+  </style>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -28,18 +39,27 @@
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', 'G-9GGPW8HF98');
-  </script></head>
+  </script>
+</head>
 <body>
 
   <!-- Navigation -->
   <nav class="nav">
     <a href="index.html" class="nav-logo"><img src="images/IMG_0385.jpeg" alt="FC ZIEL"></a>
     <div class="nav-links">
-      <a href="index.html" class="active">トップ</a>
-      <a href="about.html">チーム情報</a>
-      <a href="location.html">活動場所</a>
-      <a href="results.html">試合結果</a>
-      <a href="join.html">募集</a>
+      <a href="index.html" class="active" data-i18n="nav-top">トップ</a>
+      <a href="about.html" data-i18n="nav-team">チーム情報</a>
+      <a href="location.html" data-i18n="nav-location">活動場所</a>
+      <a href="results.html" data-i18n="nav-results">試合結果</a>
+      <a href="join.html" data-i18n="nav-join">募集</a>
+    </div>
+    <div class="lang-switcher">
+      <button onclick="setLang('ja')" data-lang="ja" class="lang-btn active">JP</button>
+      <button onclick="setLang('en')" data-lang="en" class="lang-btn">EN</button>
+      <button onclick="setLang('zh')" data-lang="zh" class="lang-btn">中</button>
+      <button onclick="setLang('ko')" data-lang="ko" class="lang-btn">한</button>
+      <button onclick="setLang('ms')" data-lang="ms" class="lang-btn">MS</button>
+      <button onclick="setLang('th')" data-lang="th" class="lang-btn">ไทย</button>
     </div>
   </nav>
 
@@ -49,11 +69,11 @@
     <div class="hero-body">
       <p class="hero-ja">TOKYO KITA-KU NO SOCCER CLUB</p>
       <h1 class="hero-en">FC ZIEL</h1>
-      <p class="hero-tagline">東京都北区で試合をメインに活動する、<br>アットホームな社会人サッカーチーム</p>
-      <span class="hero-badge">⚽ メンバー随時募集中</span>
+      <p class="hero-tagline" data-i18n-html="hero-tagline">東京都北区で試合をメインに活動する、<br>アットホームな社会人サッカーチーム</p>
+      <span class="hero-badge" data-i18n="hero-badge">⚽ メンバー随時募集中</span>
       <div class="hero-btns">
-        <a href="join.html" class="btn btn-gold">参加する</a>
-        <a href="results.html" class="btn btn-outline">試合結果を見る</a>
+        <a href="join.html" class="btn btn-gold" data-i18n="btn-join">参加する</a>
+        <a href="results.html" class="btn btn-outline" data-i18n="btn-results">試合結果を見る</a>
       </div>
     </div>
   </section>
@@ -61,20 +81,20 @@
   <!-- Stats bar -->
   <div class="stats-bar">
     <div class="stat">
-      <span class="stat-num">月1回程度</span>
-      <span class="stat-label">活動頻度（リーグスケジュールによる）</span>
+      <span class="stat-num" data-i18n="stat-freq">月1回程度</span>
+      <span class="stat-label" data-i18n="stat-freq-label">活動頻度（リーグスケジュールによる）</span>
     </div>
     <div class="stat">
-      <span class="stat-num">主に日曜日</span>
-      <span class="stat-label">活動日</span>
+      <span class="stat-num" data-i18n="stat-day">主に日曜日</span>
+      <span class="stat-label" data-i18n="stat-day-label">活動日</span>
     </div>
     <div class="stat">
-      <span class="stat-num">北区社会人リーグ</span>
+      <span class="stat-num" data-i18n="stat-league">北区社会人リーグ</span>
       <span class="stat-label"><span style="background:rgba(255,255,255,0.15);color:#fff;padding:0.1rem 0.6rem;border-radius:2rem;font-size:0.68rem;font-weight:700;letter-spacing:0.05em">2部</span></span>
     </div>
     <div class="stat">
-      <span class="stat-num">経験者</span>
-      <span class="stat-label">大歓迎</span>
+      <span class="stat-num" data-i18n="stat-exp">経験者</span>
+      <span class="stat-label" data-i18n="stat-exp-label">大歓迎</span>
     </div>
   </div>
 
@@ -82,18 +102,20 @@
   <section>
     <div class="container">
       <span class="section-eyebrow">News &amp; Schedule</span>
-      <h2 class="section-title">お知らせ・<span>試合日程</span></h2>
+      <h2 class="section-title" data-i18n-html="news-title">お知らせ・<span>試合日程</span></h2>
       <div class="news-list">
         <!-- NEWS_INSERT -->
 
-        <div class="news-item news-upcoming">
-          <span class="news-tag tag-upcoming">次の試合</span>
+        <div class="news-item news-result">
+          <span class="news-tag tag-result" data-i18n="tag-result">結果</span>
           <span class="news-date">5/17（日）10:45</span>
-          <span class="news-body">2部A　<strong>トリコロール vs FC ZIEL</strong>　@ 赤羽スポーツの森</span>
+          <span class="news-body">2部A　<strong>トリコロール vs FC ZIEL</strong>　@ 赤羽スポーツの森
+            <span class="news-score loss">0 - 3 ●</span>
+          </span>
         </div>
 
         <div class="news-item news-result">
-          <span class="news-tag tag-result">結果</span>
+          <span class="news-tag tag-result" data-i18n="tag-result">結果</span>
           <span class="news-date">4/29（水祝）15:00</span>
           <span class="news-body">2部A　<strong>FC ZIEL vs 志茂</strong>　@ 北運動公園
             <span class="news-score loss">1 - 2 ●</span>
@@ -101,9 +123,9 @@
         </div>
 
         <div class="news-item news-info">
-          <span class="news-tag tag-info">お知らせ</span>
-          <span class="news-date">2026年度</span>
-          <span class="news-body">北区社会人サッカーリーグ 2部A 参加中</span>
+          <span class="news-tag tag-info" data-i18n="tag-info">お知らせ</span>
+          <span class="news-date" data-i18n="news-date-label">2026年度</span>
+          <span class="news-body" data-i18n="news-info-body">北区社会人サッカーリーグ 2部A 参加中</span>
         </div>
 
       </div>
@@ -119,24 +141,24 @@
         </div>
         <div class="about-text">
           <span class="section-eyebrow">About Us</span>
-          <h2 class="section-title">北区で、<span>サッカーを楽しむ</span></h2>
-          <p>FC ZIEL（ツイール）は、東京都北区を拠点に活動する社会人サッカーチームです。「ZIEL」はドイツ語で「目標・ゴール」を意味します。</p>
-          <p>仕事や家庭と両立しやすい月1回程度の活動頻度で、北区社会人サッカーリーグの試合に参加。勝利を目指しながら、アットホームな雰囲気を大切にしています。</p>
+          <h2 class="section-title" data-i18n-html="about-title">北区で、<span>サッカーを楽しむ</span></h2>
+          <p data-i18n="about-p1">FC ZIEL（ツイール）は、東京都北区を拠点に活動する社会人サッカーチームです。「ZIEL」はドイツ語で「目標・ゴール」を意味します。</p>
+          <p data-i18n="about-p2">仕事や家庭と両立しやすい月1回程度の活動頻度で、北区社会人サッカーリーグの試合に参加。勝利を目指しながら、アットホームな雰囲気を大切にしています。</p>
           <div class="detail-grid">
             <div class="detail-item">
-              <em>活動場所</em>
+              <em data-i18n="detail-loc">活動場所</em>
               <strong>赤羽スポーツの森 / 北運動公園</strong>
             </div>
             <div class="detail-item">
-              <em>活動日</em>
-              <strong>主に日曜日</strong>
+              <em data-i18n="detail-day">活動日</em>
+              <strong data-i18n="stat-day">主に日曜日</strong>
             </div>
             <div class="detail-item">
-              <em>リーグ</em>
+              <em data-i18n="detail-league">リーグ</em>
               <strong>北区社会人サッカーリーグ 2部</strong>
             </div>
             <div class="detail-item">
-              <em>参加資格</em><strong>経験・未経験問わず歓迎</strong>
+              <em data-i18n="detail-qual">参加資格</em><strong data-i18n="detail-qual-val">経験・未経験問わず歓迎</strong>
             </div>
           </div>
         </div>
@@ -158,9 +180,9 @@
   <!-- Join CTA -->
   <div class="cta-banner">
     <span class="section-eyebrow">Join Us</span>
-    <h2 class="section-title">一緒にグラウンドへ出よう</h2>
-    <p>サッカー経験者はもちろん、未経験者も大歓迎！年齢・ポジション問いません。<br>まずはお気軽に問い合わせください。</p>
-    <a href="join.html" class="btn btn-gold">メンバー募集ページへ</a>
+    <h2 class="section-title" data-i18n="cta-title">一緒にグラウンドへ出よう</h2>
+    <p data-i18n-html="cta-p">サッカー経験者はもちろん、未経験者も大歓迎！年齢・ポジション問いません。<br>まずはお気軽に問い合わせください。</p>
+    <a href="join.html" class="btn btn-gold" data-i18n="cta-btn">メンバー募集ページへ</a>
   </div>
 
   <!-- Recruit Popup -->
@@ -170,14 +192,14 @@
 
       <!-- お知らせ -->
       <div class="popup-section">
-        <span class="popup-section-label">📢 お知らせ</span>
+        <span class="popup-section-label" data-i18n="popup-news-label">📢 お知らせ</span>
         <div class="popup-news">
           <div class="popup-news-item">
-            <span class="popup-news-tag tag-upcoming">次の試合</span>
-            <span>5/17（日）10:45　トリコロール vs FC ZIEL　@ 赤スポ</span>
+            <span class="popup-news-tag tag-result" data-i18n="tag-result">結果</span>
+            <span>5/17（日）トリコロール vs FC ZIEL　<span class="loss">0 - 3 ●</span></span>
           </div>
           <div class="popup-news-item">
-            <span class="popup-news-tag tag-result">結果</span>
+            <span class="popup-news-tag tag-result" data-i18n="tag-result">結果</span>
             <span>4/29（水祝）FC ZIEL vs 志茂　<span class="loss">1 - 2 ●</span></span>
           </div>
         </div>
@@ -186,13 +208,13 @@
       <div class="popup-divider"></div>
 
       <!-- メンバー募集 -->
-      <span class="popup-recruit-label">メンバー募集</span>
-      <p class="popup-title-line"><span class="popup-ball">⚽</span><span class="popup-title">一緒に蹴ろう！</span></p>
+      <span class="popup-recruit-label" data-i18n="popup-recruit-label">メンバー募集</span>
+      <p class="popup-title-line"><span class="popup-ball">⚽</span><span class="popup-title" data-i18n="popup-title">一緒に蹴ろう！</span></p>
       <p class="popup-sub">FC ZIEL — TOKYO KITA-KU</p>
       <div class="popup-divider"></div>
-      <p class="popup-text"><strong>経験者・未経験者</strong>どなたでも大歓迎。月1回程度、北区で一緒に試合をしませんか？</p>
-      <a href="join.html" class="popup-btn">問い合わせはこちら</a>
-      <button class="popup-later" onclick="closePopup()">後で見る</button>
+      <p class="popup-text" data-i18n-html="popup-text"><strong>経験者・未経験者</strong>どなたでも大歓迎。月1回程度、北区で一緒に試合をしませんか？</p>
+      <a href="join.html" class="popup-btn" data-i18n="popup-btn">問い合わせはこちら</a>
+      <button class="popup-later" onclick="closePopup()" data-i18n="popup-later">後で見る</button>
     </div>
   </div>
 
@@ -200,13 +222,201 @@
   <a href="join.html" class="float-cta">
     <span class="float-cta-icon">⚽</span>
     <div class="float-cta-inner">
-      <span>メンバー募集</span>
-      <small>ご質問はこちら →</small>
+      <span data-i18n="float-cta">メンバー募集</span>
+      <small data-i18n="float-cta-sub">ご質問はこちら →</small>
     </div>
   </a>
 
   <script src="stars.js"></script>
   <script>
+    const i18n = {
+      ja: {
+        'nav-top':'トップ','nav-team':'チーム情報','nav-location':'活動場所',
+        'nav-results':'試合結果','nav-join':'募集',
+        'hero-tagline':'東京都北区で試合をメインに活動する、<br>アットホームな社会人サッカーチーム',
+        'hero-badge':'⚽ メンバー随時募集中',
+        'btn-join':'参加する','btn-results':'試合結果を見る',
+        'stat-freq':'月1回程度','stat-freq-label':'活動頻度（リーグスケジュールによる）',
+        'stat-day':'主に日曜日','stat-day-label':'活動日',
+        'stat-league':'北区社会人リーグ','stat-exp':'経験者','stat-exp-label':'大歓迎',
+        'news-title':'お知らせ・<span>試合日程</span>',
+        'tag-result':'結果','tag-info':'お知らせ',
+        'news-date-label':'2026年度','news-info-body':'北区社会人サッカーリーグ 2部A 参加中',
+        'about-title':'北区で、<span>サッカーを楽しむ</span>',
+        'about-p1':'FC ZIEL（ツイール）は、東京都北区を拠点に活動する社会人サッカーチームです。「ZIEL」はドイツ語で「目標・ゴール」を意味します。',
+        'about-p2':'仕事や家庭と両立しやすい月1回程度の活動頻度で、北区社会人サッカーリーグの試合に参加。勝利を目指しながら、アットホームな雰囲気を大切にしています。',
+        'detail-loc':'活動場所','detail-day':'活動日','detail-league':'リーグ',
+        'detail-qual':'参加資格','detail-qual-val':'経験・未経験問わず歓迎',
+        'cta-title':'一緒にグラウンドへ出よう',
+        'cta-p':'サッカー経験者はもちろん、未経験者も大歓迎！年齢・ポジション問いません。<br>まずはお気軽に問い合わせください。',
+        'cta-btn':'メンバー募集ページへ',
+        'popup-news-label':'📢 お知らせ','popup-recruit-label':'メンバー募集',
+        'popup-title':'一緒に蹴ろう！',
+        'popup-text':'<strong>経験者・未経験者</strong>どなたでも大歓迎。月1回程度、北区で一緒に試合をしませんか？',
+        'popup-btn':'問い合わせはこちら','popup-later':'後で見る',
+        'float-cta':'メンバー募集','float-cta-sub':'ご質問はこちら →',
+        'footer-faq':'よくある質問（FAQ）',
+        'footer-copy':'© FC ZIEL｜東京都北区の社会人サッカーチーム',
+      },
+      en: {
+        'nav-top':'Top','nav-team':'Team','nav-location':'Venues',
+        'nav-results':'Results','nav-join':'Join',
+        'hero-tagline':'A friendly amateur soccer team<br>based in Kita-ku, Tokyo',
+        'hero-badge':'⚽ New Members Welcome',
+        'btn-join':'Join Us','btn-results':'View Results',
+        'stat-freq':'~Monthly','stat-freq-label':'Activity frequency (by league schedule)',
+        'stat-day':'Sundays','stat-day-label':'Activity day',
+        'stat-league':'Kita-ku Amateur League','stat-exp':'All Levels','stat-exp-label':'Welcome',
+        'news-title':'News & <span>Schedule</span>',
+        'tag-result':'Result','tag-info':'Info',
+        'news-date-label':'Season 2026','news-info-body':'Competing in Kita-ku Amateur Soccer League Division 2A',
+        'about-title':'Play Soccer<br><span>in Kita-ku</span>',
+        'about-p1':'FC ZIEL is an amateur soccer team based in Kita-ku, Tokyo. "ZIEL" means "goal" in German.',
+        'about-p2':'We play about once a month in the Kita-ku Amateur Soccer League, aiming for victories while keeping a welcoming, family-friendly atmosphere.',
+        'detail-loc':'Venues','detail-day':'Days','detail-league':'League',
+        'detail-qual':'Requirements','detail-qual-val':'All experience levels welcome',
+        'cta-title':'Join Us on the Pitch',
+        'cta-p':'All skill levels welcome — beginners too! Age and position don\'t matter.<br>Feel free to reach out anytime.',
+        'cta-btn':'Join the Team',
+        'popup-news-label':'📢 News','popup-recruit-label':'Join Us',
+        'popup-title':'Kick a Ball with Us!',
+        'popup-text':'<strong>Everyone is welcome</strong> — beginner or experienced. Play soccer in Kita-ku once a month?',
+        'popup-btn':'Contact Us','popup-later':'Maybe Later',
+        'float-cta':'Join','float-cta-sub':'Enquire here →',
+        'footer-faq':'FAQ',
+        'footer-copy':'© FC ZIEL｜Amateur Soccer Team, Kita-ku, Tokyo',
+      },
+      zh: {
+        'nav-top':'首页','nav-team':'球队信息','nav-location':'活动场地',
+        'nav-results':'比赛结果','nav-join':'加入',
+        'hero-tagline':'东京都北区的业余足球队，<br>氛围友好，欢迎新成员',
+        'hero-badge':'⚽ 随时招募新成员',
+        'btn-join':'加入我们','btn-results':'查看比赛结果',
+        'stat-freq':'每月约1次','stat-freq-label':'活动频率（依联赛赛程）',
+        'stat-day':'主要为周日','stat-day-label':'活动日',
+        'stat-league':'北区业余联赛','stat-exp':'有经验者','stat-exp-label':'热烈欢迎',
+        'news-title':'公告・<span>赛程</span>',
+        'tag-result':'结果','tag-info':'公告',
+        'news-date-label':'2026年度','news-info-body':'参加北区社会人足球联赛2部A',
+        'about-title':'在北区，<span>享受足球</span>',
+        'about-p1':'FC ZIEL 是一支以东京都北区为据点的业余足球队。"ZIEL"在德语中意为"目标・球门"。',
+        'about-p2':'每月约活动一次，参加北区业余足球联赛。追求胜利的同时，也注重轻松友好的团队氛围。',
+        'detail-loc':'活动场地','detail-day':'活动日','detail-league':'联赛',
+        'detail-qual':'参加条件','detail-qual-val':'有经验者及初学者均欢迎',
+        'cta-title':'一起上场吧',
+        'cta-p':'有经验者和初学者都欢迎！不限年龄和位置。<br>欢迎随时联系我们。',
+        'cta-btn':'查看招募信息',
+        'popup-news-label':'📢 公告','popup-recruit-label':'招募成员',
+        'popup-title':'一起踢球吧！',
+        'popup-text':'<strong>有经验者・初学者</strong>均欢迎。每月约一次，在北区一起比赛如何？',
+        'popup-btn':'联系我们','popup-later':'稍后再看',
+        'float-cta':'招募','float-cta-sub':'点击询问 →',
+        'footer-faq':'常见问题（FAQ）',
+        'footer-copy':'© FC ZIEL｜东京都北区业余足球队',
+      },
+      ko: {
+        'nav-top':'홈','nav-team':'팀 정보','nav-location':'활동 장소',
+        'nav-results':'경기 결과','nav-join':'지원',
+        'hero-tagline':'도쿄 기타구를 거점으로 활동하는<br>아마추어 축구팀',
+        'hero-badge':'⚽ 멤버 모집 중',
+        'btn-join':'참가하기','btn-results':'경기 결과 보기',
+        'stat-freq':'월 1회 정도','stat-freq-label':'활동 빈도（리그 일정에 따름）',
+        'stat-day':'주로 일요일','stat-day-label':'활동일',
+        'stat-league':'기타구 아마추어 리그','stat-exp':'경험자','stat-exp-label':'환영',
+        'news-title':'공지・<span>경기 일정</span>',
+        'tag-result':'결과','tag-info':'공지',
+        'news-date-label':'2026년도','news-info-body':'기타구 사회인 축구 리그 2부A 참가 중',
+        'about-title':'기타구에서,<br><span>축구를 즐기다</span>',
+        'about-p1':'FC ZIEL은 도쿄도 기타구를 거점으로 활동하는 아마추어 축구팀입니다. "ZIEL"은 독일어로 "목표・골"을 의미합니다.',
+        'about-p2':'월 1회 정도 기타구 사회인 축구 리그에 참가합니다. 승리를 목표로 하면서도 화목한 분위기를 소중히 여기고 있습니다.',
+        'detail-loc':'활동 장소','detail-day':'활동일','detail-league':'리그',
+        'detail-qual':'참가 자격','detail-qual-val':'경험자・미경험자 모두 환영',
+        'cta-title':'함께 그라운드로 나가자',
+        'cta-p':'경험자는 물론 초보자도 환영! 나이・포지션 불문합니다.<br>편하게 문의해 주세요.',
+        'cta-btn':'멤버 모집 페이지로',
+        'popup-news-label':'📢 공지','popup-recruit-label':'멤버 모집',
+        'popup-title':'함께 차자!',
+        'popup-text':'<strong>경험자・초보자</strong> 모두 환영합니다. 월 1회 기타구에서 함께 경기하실 분?',
+        'popup-btn':'문의하기','popup-later':'나중에 보기',
+        'float-cta':'멤버 모집','float-cta-sub':'문의는 이쪽 →',
+        'footer-faq':'자주 묻는 질문（FAQ）',
+        'footer-copy':'© FC ZIEL｜도쿄도 기타구 아마추어 축구팀',
+      },
+      ms: {
+        'nav-top':'Utama','nav-team':'Pasukan','nav-location':'Lokasi',
+        'nav-results':'Keputusan','nav-join':'Sertai',
+        'hero-tagline':'Pasukan bola sepak amatur yang mesra<br>berpusat di Kita-ku, Tokyo',
+        'hero-badge':'⚽ Ahli Baru Dijemput',
+        'btn-join':'Sertai Kami','btn-results':'Lihat Keputusan',
+        'stat-freq':'~1x Sebulan','stat-freq-label':'Kekerapan aktiviti (mengikut jadual liga)',
+        'stat-day':'Ahad','stat-day-label':'Hari aktiviti',
+        'stat-league':'Liga Amatur Kita-ku','stat-exp':'Semua Tahap','stat-exp-label':'Dialu-alukan',
+        'news-title':'Berita & <span>Jadual</span>',
+        'tag-result':'Keputusan','tag-info':'Info',
+        'news-date-label':'Musim 2026','news-info-body':'Menyertai Liga Bola Sepak Kita-ku Bahagian 2A',
+        'about-title':'Bermain Bola Sepak<br><span>di Kita-ku</span>',
+        'about-p1':'FC ZIEL ialah pasukan bola sepak amatur yang berpusat di Kita-ku, Tokyo. "ZIEL" bermaksud "matlamat/gol" dalam bahasa Jerman.',
+        'about-p2':'Kami bermain kira-kira sekali sebulan dalam Liga Bola Sepak Amatur Kita-ku, mengutamakan kemenangan sambil menjaga suasana kekeluargaan.',
+        'detail-loc':'Lokasi','detail-day':'Hari','detail-league':'Liga',
+        'detail-qual':'Syarat','detail-qual-val':'Semua peringkat dialu-alukan',
+        'cta-title':'Sertai Kami di Padang',
+        'cta-p':'Pemain berpengalaman mahupun pemula — semua dialu-alukan!<br>Hubungi kami bila-bila masa.',
+        'cta-btn':'Halaman Penyertaan',
+        'popup-news-label':'📢 Berita','popup-recruit-label':'Sertai Pasukan',
+        'popup-title':'Mari Tendang Bersama!',
+        'popup-text':'<strong>Berpengalaman atau pemula</strong> — semua dialu-alukan. Main bola sepak di Kita-ku sebulan sekali?',
+        'popup-btn':'Hubungi Kami','popup-later':'Kemudian',
+        'float-cta':'Sertai','float-cta-sub':'Tanya di sini →',
+        'footer-faq':'Soalan Lazim (FAQ)',
+        'footer-copy':'© FC ZIEL｜Pasukan Bola Sepak Amatur, Kita-ku, Tokyo',
+      },
+      th: {
+        'nav-top':'หน้าแรก','nav-team':'ข้อมูลทีม','nav-location':'สนามกีฬา',
+        'nav-results':'ผลการแข่งขัน','nav-join':'สมัคร',
+        'hero-tagline':'ทีมฟุตบอลสมัครเล่นบรรยากาศอบอุ่น<br>ประจำเขตคิตะ โตเกียว',
+        'hero-badge':'⚽ รับสมัครสมาชิก',
+        'btn-join':'เข้าร่วมทีม','btn-results':'ดูผลการแข่งขัน',
+        'stat-freq':'เดือนละ 1 ครั้ง','stat-freq-label':'ความถี่ (ตามตารางลีก)',
+        'stat-day':'วันอาทิตย์','stat-day-label':'วันกิจกรรม',
+        'stat-league':'ลีกสมัครเล่น คิตะ','stat-exp':'ทุกระดับ','stat-exp-label':'ยินดีต้อนรับ',
+        'news-title':'ข่าวสาร & <span>ตารางแข่ง</span>',
+        'tag-result':'ผลการแข่ง','tag-info':'ข่าวสาร',
+        'news-date-label':'ฤดูกาล 2026','news-info-body':'เข้าร่วมลีกฟุตบอลเขตคิตะ ดิวิชั่น 2A',
+        'about-title':'เล่นฟุตบอล<br><span>ที่คิตะ</span>',
+        'about-p1':'FC ZIEL คือทีมฟุตบอลสมัครเล่นในเขตคิตะ โตเกียว "ZIEL" แปลว่า "เป้าหมาย/ประตู" ในภาษาเยอรมัน',
+        'about-p2':'เราแข่งขันประมาณเดือนละครั้งในลีกฟุตบอลสมัครเล่นเขตคิตะ มุ่งสู่ชัยชนะพร้อมรักษาบรรยากาศที่เป็นกันเอง',
+        'detail-loc':'สนามกีฬา','detail-day':'วันกิจกรรม','detail-league':'ลีก',
+        'detail-qual':'คุณสมบัติ','detail-qual-val':'ยินดีต้อนรับทุกระดับ',
+        'cta-title':'มาร่วมเล่นกับเรา',
+        'cta-p':'ยินดีต้อนรับทั้งมือเก่าและมือใหม่! ไม่จำกัดอายุและตำแหน่ง<br>สอบถามได้เลย',
+        'cta-btn':'ไปหน้าสมัครสมาชิก',
+        'popup-news-label':'📢 ข่าวสาร','popup-recruit-label':'รับสมัครสมาชิก',
+        'popup-title':'มาเตะบอลด้วยกัน!',
+        'popup-text':'<strong>มือเก่าหรือมือใหม่</strong> ยินดีต้อนรับทุกคน แข่งฟุตบอลที่คิตะเดือนละครั้ง',
+        'popup-btn':'ติดต่อเรา','popup-later':'ภายหลัง',
+        'float-cta':'สมัครสมาชิก','float-cta-sub':'สอบถามที่นี่ →',
+        'footer-faq':'คำถามที่พบบ่อย (FAQ)',
+        'footer-copy':'© FC ZIEL｜ทีมฟุตบอลสมัครเล่น เขตคิตะ โตเกียว',
+      },
+    };
+
+    function setLang(lang) {
+      const t = i18n[lang];
+      if (!t) return;
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        if (t[el.dataset.i18n] !== undefined) el.textContent = t[el.dataset.i18n];
+      });
+      document.querySelectorAll('[data-i18n-html]').forEach(el => {
+        const key = el.dataset.i18nHtml;
+        if (t[key] !== undefined) el.innerHTML = t[key];
+      });
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
+      document.documentElement.lang = lang === 'zh' ? 'zh-Hans' : lang;
+      localStorage.setItem('fcziel-lang', lang);
+    }
+
     function closePopup() {
       document.getElementById('recruitPopup').classList.remove('active');
       sessionStorage.setItem('popupDone', '1');
@@ -236,6 +446,8 @@
     }
 
     window.addEventListener('DOMContentLoaded', function() {
+      const saved = localStorage.getItem('fcziel-lang');
+      if (saved && i18n[saved]) setLang(saved);
       hideExpiredUpcoming();
       if (!sessionStorage.getItem('popupDone')) {
         setTimeout(function() {
@@ -246,8 +458,8 @@
   </script>
   <footer>
     <span class="footer-logo">FC ZIEL</span>
-    <p style="margin-bottom:0.5rem"><a href="faq.html" style="color:#6B7280;text-decoration:none;font-size:0.82rem">よくある質問（FAQ）</a></p>
-    <p>© FC ZIEL｜東京都北区の社会人サッカーチーム</p>
+    <p style="margin-bottom:0.5rem"><a href="faq.html" style="color:#6B7280;text-decoration:none;font-size:0.82rem" data-i18n="footer-faq">よくある質問（FAQ）</a></p>
+    <p data-i18n="footer-copy">© FC ZIEL｜東京都北区の社会人サッカーチーム</p>
   </footer>
 
 </body>

@@ -108,6 +108,29 @@
     @media (max-width: 480px) {
       .form-row { grid-template-columns: 1fr; }
     }
+
+    /* Calendar */
+    .cal-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; }
+    .cal-nav-btn { background:none; border:1px solid #30363d; color:#e5e7eb; padding:0.35rem 0.8rem; border-radius:6px; cursor:pointer; font-family:inherit; font-size:0.9rem; }
+    .cal-nav-btn:hover { border-color:var(--gold); color:var(--gold); }
+    .cal-month { color:var(--gold); font-weight:700; font-size:1rem; }
+    .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:3px; }
+    .cal-header { text-align:center; font-size:0.72rem; color:var(--muted); padding:0.3rem 0; }
+    .cal-day { min-height:2.8rem; background:#161b22; border-radius:4px; padding:0.25rem; }
+    .cal-day.today { border:1px solid var(--gold); }
+    .cal-day.other-month { opacity:0.2; }
+    .cal-day.has-match { cursor:pointer; }
+    .cal-day.has-match:hover { border:1px solid #30363d; }
+    .cal-day-num { display:block; color:#9ca3af; font-size:0.75rem; }
+    .cal-dots { display:flex; flex-wrap:wrap; gap:2px; margin-top:3px; }
+    .cal-dot { width:7px; height:7px; border-radius:50%; }
+    .cal-dot-win      { background:#3fb950; }
+    .cal-dot-loss     { background:#f85149; }
+    .cal-dot-draw     { background:#6B7280; }
+    .cal-dot-upcoming { background:var(--gold); }
+    .cal-detail { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:1rem; margin-top:0.8rem; min-height:3rem; font-size:0.85rem; color:#e5e7eb; }
+    .cal-legend { display:flex; gap:1rem; margin-top:0.8rem; flex-wrap:wrap; }
+    .cal-legend-item { display:flex; align-items:center; gap:0.35rem; font-size:0.75rem; color:var(--muted); }
   </style>
 </head>
 <body>
@@ -140,6 +163,7 @@
   <div class="tabs">
     <button class="tab active" onclick="switchTab('news')">📢 お知らせ</button>
     <button class="tab" onclick="switchTab('match')">⚽ 試合結果</button>
+    <button class="tab" onclick="switchTab('calendar')">📅 カレンダー</button>
     <button class="tab" onclick="switchTab('analytics')">📊 分析</button>
   </div>
 
@@ -254,6 +278,26 @@
     </div>
   </div>
 
+  <!-- カレンダーパネル -->
+  <div class="panel" id="panel-calendar">
+    <div class="card">
+      <h3>試合カレンダー</h3>
+      <div class="cal-nav">
+        <button class="cal-nav-btn" onclick="changeMonth(-1)">◀</button>
+        <span class="cal-month" id="cal-month-label"></span>
+        <button class="cal-nav-btn" onclick="changeMonth(1)">▶</button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+      <div class="cal-legend">
+        <div class="cal-legend-item"><span class="cal-dot cal-dot-upcoming"></span>予定</div>
+        <div class="cal-legend-item"><span class="cal-dot cal-dot-win"></span>勝</div>
+        <div class="cal-legend-item"><span class="cal-dot cal-dot-loss"></span>負</div>
+        <div class="cal-legend-item"><span class="cal-dot cal-dot-draw"></span>分</div>
+      </div>
+      <div class="cal-detail" id="cal-detail"><span style="color:var(--muted)">日付をクリックで詳細表示</span></div>
+    </div>
+  </div>
+
   <!-- 分析パネル -->
   <div class="panel" id="panel-analytics">
     <div class="card">
@@ -332,9 +376,117 @@ async function checkToken() {
 
 // ── Tabs ──
 function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['news','match','analytics'][i]===tab));
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', ['news','match','calendar','analytics'][i]===tab));
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById('panel-'+tab).classList.add('active');
+  if (tab === 'calendar') loadCalendar();
+}
+
+// ── Calendar ──
+let calMatches = [];
+let calYear  = new Date().getFullYear();
+let calMonth = new Date().getMonth();
+let calLoaded = false;
+
+async function loadCalendar() {
+  if (calLoaded) { renderCalendar(); return; }
+  document.getElementById('cal-detail').innerHTML = '<span style="color:var(--muted)">読み込み中…</span>';
+  try {
+    const res = await fetch(`https://raw.githubusercontent.com/${OWNER}/${REPO}/main/results.html`);
+    const html = await res.text();
+    const doc  = new DOMParser().parseFromString(html, 'text/html');
+    calMatches = [];
+    doc.querySelectorAll('tr.result-win,tr.result-loss,tr.result-draw,tr.result-upcoming').forEach(row => {
+      const cells = row.querySelectorAll('td');
+      if (cells.length < 5) return;
+      const dateText = cells[0].textContent.trim();
+      const m = dateText.match(/(\d{1,2})\/(\d{1,2})/);
+      if (!m) return;
+      calMatches.push({
+        month: +m[1], day: +m[2], dateText,
+        opponent: cells[1].textContent.trim(),
+        venue:    cells[2].textContent.trim(),
+        score:    cells[3].textContent.trim(),
+        type: row.classList.contains('result-win')  ? 'win'
+            : row.classList.contains('result-loss') ? 'loss'
+            : row.classList.contains('result-draw') ? 'draw' : 'upcoming'
+      });
+    });
+    calLoaded = true;
+    renderCalendar();
+    document.getElementById('cal-detail').innerHTML = '<span style="color:var(--muted)">日付をクリックで詳細表示</span>';
+  } catch(e) {
+    document.getElementById('cal-detail').textContent = '読み込みエラー: ' + e.message;
+  }
+}
+
+function changeMonth(delta) {
+  calMonth += delta;
+  if (calMonth < 0)  { calMonth = 11; calYear--; }
+  if (calMonth > 11) { calMonth = 0;  calYear++; }
+  renderCalendar();
+}
+
+function renderCalendar() {
+  document.getElementById('cal-month-label').textContent = `${calYear}年${calMonth + 1}月`;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+
+  ['月','火','水','木','金','土','日'].forEach(d => {
+    const h = document.createElement('div');
+    h.className = 'cal-header';
+    h.textContent = d;
+    grid.appendChild(h);
+  });
+
+  const firstDay    = new Date(calYear, calMonth, 1).getDay();
+  const startOffset = (firstDay + 6) % 7;
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today       = new Date();
+
+  for (let i = 0; i < startOffset; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day other-month';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day';
+    if (calYear === today.getFullYear() && calMonth === today.getMonth() && d === today.getDate())
+      el.classList.add('today');
+
+    const num = document.createElement('span');
+    num.className = 'cal-day-num';
+    num.textContent = d;
+    el.appendChild(num);
+
+    const dayMatches = calMatches.filter(m => m.month === calMonth + 1 && m.day === d);
+    if (dayMatches.length > 0) {
+      el.classList.add('has-match');
+      const dots = document.createElement('div');
+      dots.className = 'cal-dots';
+      dayMatches.forEach(m => {
+        const dot = document.createElement('span');
+        dot.className = `cal-dot cal-dot-${m.type}`;
+        dots.appendChild(dot);
+      });
+      el.appendChild(dots);
+      el.onclick = () => showCalDetail(dayMatches);
+    }
+    grid.appendChild(el);
+  }
+}
+
+function showCalDetail(dayMatches) {
+  const labelMap = { win:'○ 勝', loss:'● 負', draw:'△ 分', upcoming:'予定' };
+  document.getElementById('cal-detail').innerHTML = dayMatches.map(m =>
+    `<div style="margin-bottom:0.4rem">
+      <strong>${m.dateText}</strong>&nbsp; vs <strong>${m.opponent}</strong>&nbsp; @ ${m.venue}
+      <br><span style="font-size:0.8rem;color:#9ca3af">${m.score}&nbsp;
+      <span class="match-badge badge-${m.type}">${labelMap[m.type]}</span></span>
+    </div>`
+  ).join('');
 }
 
 // ── News helpers ──
